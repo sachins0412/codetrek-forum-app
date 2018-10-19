@@ -10,16 +10,6 @@ $conn = mysqli_connect($servername, $username, $password,$db);
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 } 
-
-
-
-
-
-
-
-
-
-
 ?>
 
 
@@ -132,7 +122,7 @@ while($row= mysqli_fetch_assoc($result))
 						
 					</div>
 					<div class="mr-3">
-						<i class="far fa-thumbs-up"  onclick="thumbD()" id="dlike">1</i>
+						<i class="far fa-thumbs-down"  onclick="thumbD()" id="dlike">1</i>
 						
 					</div>
 					<div class="mr-3">
