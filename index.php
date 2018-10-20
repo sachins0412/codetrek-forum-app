@@ -10,18 +10,9 @@ $conn = mysqli_connect($servername, $username, $password,$db);
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 } 
+
+
 ?>
-
-
-
-
-
-
-
-
-
-
-
 
 
 <!DOCTYPE html>
@@ -72,11 +63,11 @@ if (!$conn) {
 		<div class="d-flex justify-content-between mb-3 flex-column flex-md-row">
 			<h3 class="font-weight-light mb-0">Questions</h3>
 			<div class="d-flex flex-column flex-md-row">
-				<form class="form-inline my-2 my-lg-0 mr-md-3">
+				<form class="form-inline my-2 my-lg-0 mr-md-3" action="index.php" method="POST">
 					<div class="input-group">
-						<input class="form-control" type="search" placeholder="Search question" aria-label="Search">
+						<input class="form-control" name="search" type="search" placeholder="Search question" aria-label="Search">
 						<div class="input-group-append">
-							<button class="btn btn-info my-0" type="submit">
+							<button class="btn btn-info my-0" type="submit" >
 								<i class="fa fa-search"></i>
 							</button>
 						</div>
@@ -87,18 +78,68 @@ if (!$conn) {
 
 		</div>
 <?php
-		$sql="SELECT * FROM questions ";
+		$sql="SELECT * FROM questions";
 		$result=mysqli_query($conn,$sql);
 		if ($result) {} else {
     echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 }
+if(isset($_POST["search"])){
+
 while($row= mysqli_fetch_assoc($result))
 	{
-		$subtag=explode(",",$row['tags'])
+		$subtag=explode(",",$row['tags']);
+		
+		if(strpos($row['title'],$_POST["search"])!== false)
+		{
+			?><div class="card mb-4 shadow-sm">
+			<div class="card-body">
+				<h4 class="card-title mb-1"><a class="text-body" id="que" href="answers.php"><?php echo $row['title']?></a></h4>
+				<p class="text-secondary mb-0">
+					<?php echo $row['body'] ?>
+				</p>
+				<?php
+				for($x=0;$x<count($subtag);$x++)
+				{ 
+				?>
+				<a href=#><span class="badge badge-info"><?php echo $subtag[$x] ?></span></a>
+				<?php
+				}
+				?>
+				<br><br>
+				<p>
+					<a href="#" class="card-link"><small>Abhishek Pokhriyal</small></a>
+					<small class="text-secondary">asked on</small>
+					<small class="text-secondary"><?php echo $row['created_at'] ?></small>
+				</p>
+				<div class="d-flex text-secondary">
+					<div class="mr-3">
+						<i class="far fa-thumbs-up"  onclick="thumbL()" id="like">14</i>
+						
+					</div>
+					<div class="mr-3">
+						<i class="far fa-thumbs-down"  onclick="thumbD()" id="dlike">1</i>
+						
+					</div>
+					<div class="mr-3">
+						<i class="far fa-comments"></i>
+						<a href="answers.html" class="text-secondary"><small>2 answers</small></a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<?php
+		}
+}
+}
+else
+	{
+		while($row= mysqli_fetch_assoc($result))
+	{
+		$subtag=explode(",",$row['tags']);
 ?>
 		<div class="card mb-4 shadow-sm">
 			<div class="card-body">
-				<h4 class="card-title mb-1"><a class="text-body" href="answers.php"><?php echo $row['title']?></a></h4>
+				<h4 class="card-title mb-1"><a class="text-body" id="que" href="answers.php"><?php echo $row['title']?></a></h4>
 				<p class="text-secondary mb-0">
 					<?php echo $row['body'] ?>
 				</p>
@@ -133,6 +174,7 @@ while($row= mysqli_fetch_assoc($result))
 			</div>
 		</div>
 <?php	
+}
 }
 
 	?>

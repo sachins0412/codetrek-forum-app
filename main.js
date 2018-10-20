@@ -67,3 +67,6 @@ function thumbD(){
       element2.innerHTML= parseInt(count2,10)-1;
         }
 }
+function search(){
+  
+}
