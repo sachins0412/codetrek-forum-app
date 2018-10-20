@@ -1,3 +1,47 @@
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$db= "codetrek_forum";
+$id=$_GET['title'];
+// Create connection
+$conn = mysqli_connect($servername, $username, $password,$db);
+
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+} 
+
+
+
+$sqlq="SELECT * FROM questions WHERE id='$id'";
+		$resultq=mysqli_query($conn,$sqlq);
+		$row=mysqli_fetch_assoc($resultq);
+		$subtag=explode(",",$row['tags']);
+		if ($resultq) {} else {
+    echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+}
+
+if(isset($_POST["ans"])){
+$ans=$_POST["ans"];
+$sql= "INSERT INTO answers(question_id,answer_text,created_at,updated_at) VALUES('$id','$ans',NOW(),NOW())";
+ $result=mysqli_query($conn,$sql);
+if ($result) {
+    
+} else {
+    echo "Error: " . $sql . "<br>" . $conn->error;
+}
+}
+$sqla="SELECT * FROM answers WHERE question_id='$id'";
+$resulta=mysqli_query($conn,$sqla);
+
+if ($resulta) {
+    
+} else {
+    echo "Error: " . $sql . "<br>" . $conn->error;
+}
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -41,62 +85,65 @@
       
   </div>
 </nav>
+
 <div class="container">
 			<div class="card-body">
-				<h4 class="card-title mb-1"><a class="text-body" href="answers.html">How do I use Git and GitHub?</a></h4>
+				<h4 class="card-title mb-1"><a class="text-body" href="answers.html"><?php echo $row['title']?></a></h4>
 				<p class="card-text text-secondary mb-0">
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum suscipit perspiciatis fuga laudantium dignissimos non recusandae id ducimus nobis dolores fugit, ipsa laboriosam eum exercitationem nesciunt laborum...Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum suscipit perspiciatis fuga laudantium dignissimos non recusandae id ducimus nobis dolores fugit, ipsa laboriosam eum exercitationem nesciunt laborum...
-				</p>
-				<br>
-				<a href=#><span class="badge badge-info">git</span></a>
-				<a href=#><span class="badge badge-info">github</span></a>
-				<a href=#><span class="badge badge-info">vcs</span></a>
+					<?php echo $row['body']?>
+				</p><br>
+				
+				<?php
+				for($x=0;$x<count($subtag);$x++)
+				{ 
+				?>
+				<a href=#><span class="badge badge-info"><?php echo $subtag[$x] ?></span></a>
+				<?php
+				}
+				?>
 				<br><br>
 				<p>
 					<a href="#" class="card-link"><small>Abhishek Pokhriyal</small></a>
 					<small class="text-secondary">asked on</small>
-					<small class="text-secondary">Sep 27, 2018</small>
+					<small class="text-secondary"><?php echo $row['created_at'] ?></small>
 				</p>
 				<div class="d-flex text-secondary">
 					<div class="mr-3">
-						<i class="far fa-thumbs-up"  onclick="thumbL()" id="like">14</i>
+						<i class="far fa-thumbs-up"  onclick="thumbL()" id="like"><?php echo $row['likes']?></i>
 						
 					</div>
 					<div class="mr-3">
-						<i class="far fa-thumbs-down" onclick="thumbD()" id="dlike">1</i>
+						<i class="far fa-thumbs-down" onclick="thumbD()" id="dlike"><?php echo $row['dislikes']?></i>
 						
 					</div>
 					<div class="mr-3">
 						<i class="far fa-comments"></i>
-						<a href="answers.html" class="text-secondary"><small>2 answers</small></a>
+						<a href="answers.html" class="text-secondary"><small><?php echo mysqli_num_rows($resulta); ?> answers</small></a>
 					</div>
 				</div>
 			</div>
-		
+		<?php 
+		while($rowa=mysqli_fetch_assoc($resulta))
+			{?>
 		<div class="card" style="margin-left: 16px">
   <div class="card-body">
-    <small class="card-title"><a href=#>Vikas Rinvi</a></small> answered on Sep 28, 2018
+    <small class="card-title"><a href=#>Vikas Rinvi</a></small> answered on <?php echo $rowa['created_at']?>
     <span class="badge badge-success"style="float:right"><i class="fas fa-check"></i> Correct answer</span><br><br>
-    <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum suscipit perspiciatis fuga laudantium dignissimos non recusandae id ducimus nobis dolores fugit, ipsa laboriosam eum exercitationem nesciunt laborum...Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum suscipit perspiciatis fuga laudantium dignissimos non recusandae id ducimus nobis dolores fugit, ipsa laboriosam eum exercitationem nesciunt laborum...</p>
-    
+    <p class="card-text"><?php echo $rowa['answer_text']?></p>
   </div>
 </div>
+<br><?php
+}
+?>
 <br>
+
 
 <div class="card " style="margin-left: 16px;">
   <div class="card-body">
-    <small class="card-title"><a href=#>Mohit Gussain</a></small> answered on Sep 27, 2018
-    <br><br>
-    <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum suscipit perspiciatis fuga laudantium dignissimos non recusandae id ducimus nobis dolores fugit, ipsa laboriosam eum exercitationem nesciunt laborum...Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum suscipit perspiciatis fuga laudantium dignissimos non recusandae id ducimus nobis dolores fugit, ipsa laboriosam eum exercitationem nesciunt laborum...</p>
-    </div>
-</div>
-<br>
-<div class="card " style="margin-left: 16px;">
-  <div class="card-body">
     <label><strong><h2>Your Answer</h2></strong></label>
-<form>
+<form action="answers.php?title=<?php echo $row['id'] ?>" method="POST">
   <div class="form-group">
-    <input type="text" class="form-control" style="height:200px"><br>
+    <input type="text" name="ans" class="form-control" style="height:200px"><br>
     <button type="submit" class="btn btn-primary">Post your answer</button>
 
   </div>

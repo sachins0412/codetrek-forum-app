@@ -10,7 +10,8 @@ $conn = mysqli_connect($servername, $username, $password,$db);
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 } 
-
+$sqla="SELECT * FROM answers ";
+$resulta=mysqli_query($conn,$sqla);
 
 ?>
 
@@ -93,7 +94,7 @@ while($row= mysqli_fetch_assoc($result))
 		{
 			?><div class="card mb-4 shadow-sm">
 			<div class="card-body">
-				<h4 class="card-title mb-1"><a class="text-body" id="que" href="answers.php"><?php echo $row['title']?></a></h4>
+				<h4 class="card-title mb-1"><a class="text-body" href="answers.php?title=<?php echo $row['id']?>"><?php echo $row['title']?></a></h4>
 				<p class="text-secondary mb-0">
 					<?php echo $row['body'] ?>
 				</p>
@@ -113,11 +114,11 @@ while($row= mysqli_fetch_assoc($result))
 				</p>
 				<div class="d-flex text-secondary">
 					<div class="mr-3">
-						<i class="far fa-thumbs-up"  onclick="thumbL()" id="like">14</i>
+						<i class="far fa-thumbs-up"  onclick="thumbL()" id="like"><?php echo $row['likes']?></i>
 						
 					</div>
 					<div class="mr-3">
-						<i class="far fa-thumbs-down"  onclick="thumbD()" id="dlike">1</i>
+						<i class="far fa-thumbs-down"  onclick="thumbD()" id="dlike"><?php echo $row['dislikes']?></i>
 						
 					</div>
 					<div class="mr-3">
@@ -139,7 +140,7 @@ else
 ?>
 		<div class="card mb-4 shadow-sm">
 			<div class="card-body">
-				<h4 class="card-title mb-1"><a class="text-body" id="que" href="answers.php"><?php echo $row['title']?></a></h4>
+				<h4 class="card-title mb-1"><a class="text-body" href="answers.php?title=<?php echo $row['id'] ?>"><?php echo $row['title']?></a></h4>
 				<p class="text-secondary mb-0">
 					<?php echo $row['body'] ?>
 				</p>
@@ -159,16 +160,16 @@ else
 				</p>
 				<div class="d-flex text-secondary">
 					<div class="mr-3">
-						<i class="far fa-thumbs-up"  onclick="thumbL()" id="like">14</i>
+						<i class="far fa-thumbs-up"  onclick="thumbL()" id="like"><?php echo $row['likes']?></i>
 						
 					</div>
 					<div class="mr-3">
-						<i class="far fa-thumbs-down"  onclick="thumbD()" id="dlike">1</i>
+						<i class="far fa-thumbs-down"  onclick="thumbD()" id="dlike"><?php echo $row['dislikes']?></i>
 						
 					</div>
 					<div class="mr-3">
 						<i class="far fa-comments"></i>
-						<a href="answers.html" class="text-secondary"><small>2 answers</small></a>
+						<a href="answers.html" class="text-secondary"><small><?php echo mysqli_num_rows($resulta); ?> answers</small></a>
 					</div>
 				</div>
 			</div>
